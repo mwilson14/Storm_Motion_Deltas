@@ -37,6 +37,7 @@ from sklearn.ensemble import RandomForestClassifier
 import nexradaws
 import os
 from grid_section_arcalg import gridding_arcalg
+from grid_section_speedy import gridding_speedygonzales
 from kdp_section import kdp_genesis
 #from gradient_section_arcalg import grad_mask_arcalg
 from ungridded_arcalg import quality_control_arcalg
@@ -180,7 +181,7 @@ def storm_motion_deltas_algorithm(REFlev, REFlev1, big_storm, zero_z_trigger, st
 
 
                 #Calling grid_section; Now let's grid the data on a ~250 m x 250 m grid
-                [REF,KDP,CC,ZDRmasked1,REFmasked,KDPmasked,rlons,rlats,rlons_2d,rlats_2d,cenlat,cenlon] = gridding_arcalg(radar)
+                [REF,KDP,CC,ZDRmasked1,REFmasked,KDPmasked,rlons,rlats,rlons_2d,rlats_2d,cenlat,cenlon] = gridding_speedygonzales(radar)
 
                 #Calling gradient_section; Determining gradient direction and masking some Zhh and Zdr grid fields
                 #[grad_mag,grad_ffd,ZDRmasked] = grad_mask_arcalg(REFmasked,REF,storm_relative_dir,ZDRmasked1,CC)
@@ -201,8 +202,8 @@ def storm_motion_deltas_algorithm(REFlev, REFlev1, big_storm, zero_z_trigger, st
                 tlats = tlatlons[:,:,1]
 
                 #Limit the extent of the map area, must convert to proper coords.
-                LL = (cenlon-1.0,cenlat-1.0,ccrs.PlateCarree())
-                UR = (cenlon+1.0,cenlat+1.0,ccrs.PlateCarree())
+                LL = (cenlon-2.0,cenlat-2.0,ccrs.PlateCarree())
+                UR = (cenlon+2.0,cenlat+2.0,ccrs.PlateCarree())
                 print(LL)
 
                 #Get data to plot state and province boundaries
@@ -690,7 +691,7 @@ def storm_motion_deltas_algorithm(REFlev, REFlev1, big_storm, zero_z_trigger, st
 
                 plt.legend(handles=[zdr_outline, kdp_outline, separation_vector, elevation], loc = 3, fontsize = 25)
                 alt_levs = [1000, 2000]
-                plt.savefig('Machine_Learning/DELTA_dev'+station+str(time_start.year)+str(time_start.month)+str(day)+str(hour)+str(minute)+'.png')
+                plt.savefig('Machine_Learning/DELTA_dev2'+station+str(time_start.year)+str(time_start.month)+str(day)+str(hour)+str(minute)+'.png')
                 print('Figure Saved')
                 plt.close()
                 zdr_out_list.append(zdr_outlines)
